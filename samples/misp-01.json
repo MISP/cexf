@@ -19,13 +19,24 @@
   },
   "inject_flow": [
     {
-      "followed_by": [
-        "c104aa37-e394-43ce-b82b-a733d3745468"
-      ],
       "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
       "reporting_callback": [],
       "requirements": [],
-      "trigger": "startex"
+      "sequence": {
+        "completion_trigger": [
+          "time_expiration",
+          "completion"
+        ],
+        "followed_by": [
+          "c104aa37-e394-43ce-b82b-a733d3745468"
+        ],
+        "trigger": [
+          "startex"
+        ]
+      },
+      "timing": {
+        "triggered_at": null
+      }
     },
     {
       "inject_uuid": "c104aa37-e394-43ce-b82b-a733d3745468",
@@ -34,7 +45,16 @@
         "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
         "resolution_requirement": "Publishing"
       },
-      "trigger": "inject-resolution"
+      "sequence": {
+        "completion_trigger": [
+          "time_expiration",
+          "completion"
+        ],
+        "trigger": "inject-resolution"
+      },
+      "timing": {
+        "triggered_at": null
+      }
     }
   ],
   "inject_payloads": [
