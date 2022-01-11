@@ -23,188 +23,250 @@ Common Exercise Format is a proposed format to describe cyber exercise including
 
 ```json
 {
-    "exercise": {
-       "uuid": "75d7460-af9d-4098-8ad1-754457076b32",
-       "name": "Phishing e-mail",
-       "description": "Simple Spear Phishing e-mail example, mimicing a fraud case",
-       "tags": ["exercise:software-scope=\"\misp\"", "state:production"],
-       "version": "20210611",
-       "valid_until": "20310611",
-       "level": "beginner",
-       "namespace": "phishing"       
+  "exercise": {
+    "description": "Simple Spear Phishing e-mail example, mimicing a fraud case",
+    "expanded": "# Simple Spear Phishing e-mail example, mimicing a fraud case",
+    "level": "beginner",
+    "meta": {
+      "author": "MISP Project"
     },
-    "inject_flow": [
-        {
-            "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
-            "trigger": "startex",
-            "requirements": []
-            "reporting_callback": []
-        },
-                {
-            "inject_uuid": "c104aa37-e394-43ce-b82b-a733d3745468",
-            "trigger": "inject-resolution",
-            "requirements": {
-                "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
-                "resolution_requirement": "Publishing"
-            }
-        }
+    "name": "Phishing e-mail",
+    "namespace": "phishing",
+    "tags": [
+      "exercise:software-scope=\"misp\"",
+      "state:production"
     ],
-    "injects": [
+    "total_duration": "7200",
+    "uuid": "75d7460-af9d-4098-8ad1-754457076b32",
+    "valid_until": "20310611",
+    "version": "20210611"
+  },
+  "inject_flow": [
+    {
+      "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
+      "reporting_callback": [],
+      "requirements": [],
+      "sequence": {
+        "completion_trigger": [
+          "time_expiration",
+          "completion"
+        ],
+        "followed_by": [
+          "c104aa37-e394-43ce-b82b-a733d3745468"
+        ],
+        "trigger": [
+          "startex"
+        ]
+      },
+      "timing": {
+        "triggered_at": null
+      }
+    },
+    {
+      "inject_uuid": "c104aa37-e394-43ce-b82b-a733d3745468",
+      "reporting_callback": [],
+      "requirements": {
+        "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
+        "resolution_requirement": "Publishing"
+      },
+      "sequence": {
+        "completion_trigger": [
+          "time_expiration",
+          "completion"
+        ],
+        "trigger": "inject-resolution"
+      },
+      "timing": {
+        "triggered_at": null
+      }
+    }
+  ],
+  "inject_payloads": [
+    {
+      "name": "",
+      "parameters": {
+        "content": "RnJvbSBjc2lydEB0ZWxjby5sdQoKRGVhciB4eSwKCldlIGhhdmUgaGFkIGEgZmFpbGVkIHNwZWFycGhpc2hpbmcgYXR0ZW1wdCB0YXJnZXRpbmcgb3VyIENFTyByZWNlbnRseSB3aXRoIHRoZSBmb2xsb3dpbmcgZGV0YWlsczoKCk91ciBDRU8gcmVjZWl2ZWQgYW4gRS1tYWlsIG9uIDAzLzAyLzIwMjEgMTU6NTYgY29udGFpbmluZyBhIHBlcnNvbmFsaXNlZCBtZXNzYWdlIGFib3V0IGEgcmVwb3J0IGNhcmQgZm9yIHRoZWlyIGNoaWxkLiBUaGUgYXR0YWNrZXIgcHJldGVuZGVkIHRvIGJlIHdvcmtpbmcgZm9yIHRoZSBzY2hvb2wgb2YgdGhlIENFT+KAmXMgZGF1Z2h0ZXIsIHNlbmRpbmcgdGhlIG1haWwgZnJvbSBhIHNwb29mZWQgYWRkcmVzcyAoam9obi5kb2VAbHV4ZW1ib3VyZy5lZHUpLiBKb2huIERvZSBpcyBhIHRlYWNoZXIgb2YgdGhlIHN0dWRlbnQuIFRoZSBlbWFpbCB3YXMgcmVjZWl2ZWQgZnJvbSB0aHJvd2F3YXktZW1haWwtcHJvdmlkZXIuY29tICgxMzcuMjIxLjEwNi4xMDQpLiAKClRoZSBlLW1haWwgY29udGFpbmVkIGEgbWFsaWNpb3VzIGZpbGUgKGZpbmQgaXQgYXR0YWNoZWQpIHRoYXQgd291bGQgdHJ5IHRvIGRvd25sb2FkIGEgc2Vjb25kYXJ5IHBheWxvYWQgZnJvbSBodHRwczovL2V2aWxwcm92aWRlci5jb20vdGhpcy1pcy1ub3QtbWFsaWNpb3VzLmV4ZSAoYWxzbyBhdHRhY2hlZCwgcmVzb2x2ZXMgdG8gMjYwNzo1MzAwOjYwOmNkNTI6MzA0Yjo3NjBkOmRhNzpkNSkuIEl0IGxvb2tzIGxpa2UgdGhlIHNhbXBsZSBpcyB0cnlpbmcgdG8gZXhwbG9pdCBDVkUtMjAxNS01NDY1LiBBZnRlciBhIGJyaWVmIHRyaWFnZSwgdGhlIHNlY29uZGFyeSBwYXlsb2FkIGhhcyBhIGhhcmRjb2RlZCBDMiBhdCBodHRwczovL2Fub3RoZXIuZXZpbC5wcm92aWRlci5jb206NTc2NjYgKDExOC4yMTcuMTgyLjM2KSB0byB3aGljaCBpdCB0cmkKZXMgdG8gZXhmaWx0cmF0ZSBsb2NhbCBjcmVkZW50aWFscy4gVGhpcyBpcyBob3cgZmFyIHdlIGhhdmUgZ290dGVuIHNvIGZhci4gUGxlYXNlIGJlIG1pbmRmdWwgdGhhdCB0aGlzIGlzIGFuIG9uZ29pbmcgaW52ZXN0aWdhdGlvbiwgd2Ugd291bGQgbGlrZSB0byBhdm9pZCBpbmZvcm1pbmcgdGhlIGF0dGFja2VyIG9mIHRoZSBkZXRlY3Rpb24gYW5kIGtpbmRseSBhc2sgeW91IHRvIG9ubHkgdXNlIHRoZSBjb250YWluZWQgaW5mb3JtYXRpb24gdG8gcHJvdGVjdCB5b3VyIGNvbnN0aXR1ZW50cy4KCkJlc3QgcmVnYXJkcywKCg==",
+        "content-type": "base64",
+        "filename": "email.eml"
+      },
+      "type": "file",
+      "uuid": "930c6f6b-f89d-456d-a59d-5cb89bdec0b1"
+    },
+    {
+      "name": "",
+      "parameters": {
+        "destination": "player_network_mail_server",
+        "source": "137.221.106.104"
+      },
+      "type": "telnet_connection",
+      "uuid": "9b519819-36cc-48b1-8418-43831f2d3a6a"
+    }
+  ],
+  "injects": [
+    {
+      "action": "email_to_participants",
+      "action_payload_resource_uuid": "930c6f6b-f89d-456d-a59d-5cb89bdec0b1",
+      "inject_evaluation": [
         {
-            "uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
-            "name": "received e-mail from csirt@telco.lu",
-            "action": "email_to_participants",
-            "action_payload_resource_uuid": "930c6f6b-f89d-456d-a59d-5cb89bdec0b1",
-            "target_tool": "MISP",
-            "inject_evaluation": [
-                {
-                    "result": "MISP event creation",
-                    "parameters": [
-                        {
-                            "Event.info": {
-                                "comparison": "contains",
-                                "values": ["phishing", "CEO"]
-                            }
-                        }
-                    ],
-                    "score_range": [0, 10]
-                },
-                {
-                    "result": "MISP attribute capture",
-                    "parameters": [
-                        {
-                            "Event.attribute": {
-                                "comparison": "equals",
-                                "values": {
-                                    {
-                                        "value": "john.doe@luxembourg.edu",
-                                        "type": ["email-src", "email"]
-                                    },
-                                    {
-                                        "value": "throwaway-email-provider.com",
-                                        "type": "domain"
-                                    },
-                                    {
-                                        "value": "137.221.106.104",
-                                        "type": ["ip-src", "ip-dst"]
-                                    },
-                                    {
-                                        "value": "CVE-2015-5465",
-                                        "type": ["vulnerability"]
-                                    }
-                                }
-                            }
-                        }
-                    ],
-                    "score_range": [0, 40]
-                },
-                {
-                    "result": "MISP object use",
-                    "parameters": [
-                        {
-                            "Event.Object": {
-                                "comparison": "count",
-                                "values": [">3"]
-                            }
-                        }
-                    ],
-                    "score_range": [0, 30]
-                },
-                {
-                    "result": "Mitre ATT&CK use",
-                    "parameters": [
-                        "OR": [
-                            {
-                                "Event.EventTag.Tag.{n}.Tag.name": {
-                                    "comparison": "contains",
-                                    "values": ["T1566"]
-                                }
-                            },
-                            {
-                                "Event.Attribute.{n}.AttributeTag.{n}.Tag.name": {
-                                    "comparison": "contains",
-                                    "values": ["T1566"]
-                                }
-                            }
-                        ]
-                    ],
-                    "score_range": [0, 10]
-                },
-                {
-                    "result": "Publishing",
-                    "parameters": [
-                        {
-                            "Event.published": {
-                                "comparison": "is",
-                                "values": [1]
-                            }
-                        }
-                    ],
-                    "score_range": [0, 10]
-                }
+          "parameters": [
+            {
+              "Event.info": {
+                "comparison": "contains",
+                "values": [
+                  "phishing",
+                  "CEO"
+                ]
+              }
             }
+          ],
+          "result": "MISP event creation",
+          "score_range": [
+            0,
+            10
+          ]
         },
         {
-            "uuid": "c104aa37-e394-43ce-b82b-a733d3745468",
-            "name": "malicious network flow",
-            "action": "network connection",
-            "action_payload_resource_uuid": "9b519819-36cc-48b1-8418-43831f2d3a6a",
-            "target_tool": "Suricata",
-            "inject_evaluation": [
-                {
-                    "result": "alert",
-                    "parameters": [
-                        {
-                            "source-ip": {
-                                "comparison": "is",
-                                "values": ["137.221.106.104"]
-                            }
-                        }
+          "parameters": [
+            {
+              "Event.attribute": {
+                "comparison": "equals",
+                "values": [
+                  {
+                    "type": [
+                      "email-src",
+                      "email"
                     ],
-                    "score_range": [0, 50]
+                    "value": "john.doe@luxembourg.edu"
+                  },
+                  {
+                    "type": "domain",
+                    "value": "throwaway-email-provider.com"
+                  },
+                  {
+                    "type": [
+                      "ip-src",
+                      "ip-dst"
+                    ],
+                    "value": "137.221.106.104"
+                  },
+                  {
+                    "type": [
+                      "vulnerability"
+                    ],
+                    "value": "CVE-2015-5465"
+                  }
+                ]
+              }
+            }
+          ],
+          "result": "MISP attribute capture",
+          "score_range": [
+            0,
+            40
+          ]
+        },
+        {
+          "parameters": [
+            {
+              "Event.Object": {
+                "comparison": "count",
+                "values": [
+                  ">3"
+                ]
+              }
+            }
+          ],
+          "result": "MISP object use",
+          "score_range": [
+            0,
+            30
+          ]
+        },
+        {
+          "parameters": {
+            "OR": [
+              {
+                "Event.EventTag.Tag.{n}.Tag.name": {
+                  "comparison": "contains",
+                  "values": [
+                    "T1566"
+                  ]
                 }
+              },
+              {
+                "Event.Attribute.{n}.AttributeTag.{n}.Tag.name": {
+                  "comparison": "contains",
+                  "values": [
+                    "T1566"
+                  ]
+                }
+              }
             ]
-                    
-        }
-    ],
-    "inject_payloads": [
-        {
-            "uuid": "930c6f6b-f89d-456d-a59d-5cb89bdec0b1",
-            "name": "",
-            "type": "file",
-            "parameters": {
-                "filename": "email.eml",
-                "contents": "Dear xy,
-
-We have had a failed spearphishing attempt targeting our CEO recently with the following details:
-
-Our CEO received an E-mail on 03/02/2021 15:56 containing a personalised message about a report card for their child. The attacker pretended to be working for the school of the CEO’s daughter, sending the mail from a spoofed address (john.doe@luxembourg.edu). John Doe is a teacher of the student. The email was received from throwaway-email-provider.com (137.221.106.104). 
-
-The e-mail contained a malicious file (find it attached) that would try to download a secondary payload from https://evilprovider.com/this-is-not-malicious.exe (also attached, resolves to 2607:5300:60:cd52:304b:760d:da7:d5). It looks like the sample is trying to exploit CVE-2015-5465. After a brief triage, the secondary payload has a hardcoded C2 at https://another.evil.provider.com:57666 (118.217.182.36) to which it tries to exfiltrate local credentials. This is how far we have gotten so far. Please be mindful that this is an ongoing investigation, we would like to avoid informing the attacker of the detection and kindly ask you to only use the contained information to protect your constituents.
-
-Best regards,",
-                "content-type": "raw"
-            }
+          },
+          "result": "Mitre ATT&CK use",
+          "score_range": [
+            0,
+            10
+          ]
         },
         {
-            "uuid": "9b519819-36cc-48b1-8418-43831f2d3a6a",
-            "name": "",
-            "type": "telnet_connection",
-            "parameters": {
-                "source": "137.221.106.104",
-                "destination": "player_network_mail_server"
+          "parameters": [
+            {
+              "Event.published": {
+                "comparison": "is",
+                "values": [
+                  1
+                ]
+              }
             }
+          ],
+          "result": "Publishing",
+          "score_range": [
+            0,
+            10
+          ]
         }
-    ]
+      ],
+      "name": "received e-mail from csirt@telco.lu",
+      "target_tool": "MISP",
+      "uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c"
+    },
+    {
+      "action": "network connection",
+      "action_payload_resource_uuid": "9b519819-36cc-48b1-8418-43831f2d3a6a",
+      "inject_evaluation": [
+        {
+          "parameters": [
+            {
+              "source-ip": {
+                "comparison": "is",
+                "values": [
+                  "137.221.106.104"
+                ]
+              }
+            }
+          ],
+          "result": "alert",
+          "score_range": [
+            0,
+            50
+          ]
+        }
+      ],
+      "name": "malicious network flow",
+      "target_tool": "Suricata",
+      "uuid": "c104aa37-e394-43ce-b82b-a733d3745468"
+    }
+  ]
 }
 ```
 # License
 
 ~~~~
- Copyright (c) 2021 Alexandre Dulaunoy - a@foo.be
- Copyright (c) 2021 CIRCL - Computer Incident Response Center Luxembourg
- Copyright (c) 2021 Andras Iklody
- Copyright (c) 2021 Koen Van Impe 
+ Copyright (c) 2021-2022 Alexandre Dulaunoy - a@foo.be
+ Copyright (c) 2021-2022 CIRCL - Computer Incident Response Center Luxembourg
+ Copyright (c) 2021-2022 Andras Iklody
+ Copyright (c) 2021-2022 Koen Van Impe
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
