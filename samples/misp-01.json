@@ -19,6 +19,9 @@
   },
   "inject_flow": [
     {
+      "followed_by": [
+        "c104aa37-e394-43ce-b82b-a733d3745468"
+      ],
       "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
       "reporting_callback": [],
       "requirements": [],
