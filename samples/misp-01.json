@@ -2,9 +2,9 @@
   "exercise": {
     "description": "Simple Spear Phishing e-mail example, mimicing a fraud case",
     "expanded": "# Simple Spear Phishing e-mail example, mimicing a fraud case",
-    "level": "beginner",
     "meta": {
-      "author": "MISP Project"
+      "author": "MISP Project",
+      "level": "beginner"
     },
     "name": "Phishing e-mail",
     "namespace": "phishing",
