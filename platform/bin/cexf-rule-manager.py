@@ -44,7 +44,7 @@ def insert_cexf(exercise=None, debug=False):
 
     # Exercise
     special_fields = ['meta', 'tags']
-    r.sadd("exercise", exercise['exercise']['uuid'])
+    r.sadd("exercises", exercise['exercise']['uuid'])
     for k in exercise['exercise'].keys():
         if k not in special_fields:
             r.hset(f"e_{exercise['exercise']['uuid']}", k, str(exercise['exercise'][k]))
@@ -64,13 +64,14 @@ def insert_cexf(exercise=None, debug=False):
             if k == 'parameters':
                 for kb in inject_payload['parameters']:
                     r.hset(f"inject_payload_{exercise['exercise']['uuid']}_{inject_payload['uuid']}_parameter", kb, str(inject_payload['parameters'][kb]))
-        print(inject_payload)
 
     # Injects
     special_fields = ['inject_evaluation']
     for inject in exercise['injects']:
         for k in inject:
             if k not in special_fields:
+                if k == 'uuid':
+                    r.sadd(f"injects_{exercise['exercise']['uuid']}", inject['uuid'])
                 r.hset(f"inject_{exercise['exercise']['uuid']}_{inject['uuid']}", k, str(inject[k]))
             if k == 'inject_evaluation':
                 r.set(f"inject_{exercise['exercise']['uuid']}_{inject['uuid']}_evaluation", json.dumps(inject['inject_evaluation']))
@@ -96,6 +97,7 @@ parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output
 parser.add_argument("-f", "--file", help="Specify CEXF file in JSON format.")
 parser.add_argument("--flush", action="store_true", default=False)
 parser.add_argument("--load", action="store_true", help="Load the CEXF file specified.", default=False)
+parser.add_argument("--list", action="store_true", default=False, help="List loaded rules in the platform.")
 args = parser.parse_args()
 
 r = redis.Redis(host='localhost', port=6379, db=11, charset="utf-8", decode_responses=True)
@@ -103,6 +105,13 @@ r = redis.Redis(host='localhost', port=6379, db=11, charset="utf-8", decode_resp
 if args.flush:
     sys.stderr.write(f'Flush exercise database\n')
     r.flushdb()
+    sys.exit(0)
+if args.list:
+    for exercise in r.smembers("exercises"):
+        ex = r.hgetall(f'e_{exercise}')
+        injects = r.scard(f'injects_{exercise}')
+        sys.stdout.write(f'Rule {ex["name"]} - {exercise} with {injects} injects is loaded.\n')
+        sys.stdout.write(f'     ◺ {ex["description"]}\n')
     sys.exit(0)
 if args.file is None:
     sys.stderr.write(f'CEXF file missing\n')
@@ -121,4 +130,3 @@ if not validate_cexf(input=ex, debug=args.verbose):
 
 if args.load:
     insert_cexf(exercise=ex, debug=args.verbose)
-print(ex['exercise']['description'])
