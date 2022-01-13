@@ -83,11 +83,13 @@ def insert_cexf(exercise=None, debug=False):
     for flow in exercise['inject_flow']:
         if 'sequence' in flow:
             if 'startex' in flow['sequence']['trigger']:
+                r.rpush(f"next_{exercise['exercise']['uuid']}", flow['inject_uuid'])
                 for destination in flow['sequence']['followed_by']:
-                    r.rpush(f"start_{exercise['exercise']['uuid']}", destination)
+                    r.rpush(f"next_{exercise['exercise']['uuid']}", destination)
             else:
                 if 'followed_by' in flow['sequence']:
                     for destination in flow['sequence']['followed_by']:
+                        print(destination)
                         r.rpush(f"next_{exercise['exercise']['uuid']}", destination)
             #r.hset(f"inject_{exercise['exercise']['uuid']}_{inject['uuid']}", k, str(inject[k]))
     return True
@@ -105,19 +107,33 @@ def check_state(exercise=None, debug=False):
         return True
 
 def run_exercise(exercise=None, debug=False):
+    '''
+    Run an exercise by creating exercise and injects state
+    '''
     if exercise is None:
         return False
     if check_state(exercise=exercise):
         if debug:
             sys.stderr.write('Exercise {exercise} is already running. Giving up.\n')
         return False
-    else:
+
+    if r.exists(f'e_{exercise}'):
         start_time = int(time.time())
         r.set(f'running_state_{exercise}', start_time)
         duration = r.hget(f'e_{exercise}', 'total_duration')
         print(duration)
         r.expire(f'running_state_{exercise}', duration)
-        return True
+    else:
+        if debug:
+            sys.stderr.write('Exercise {exercise} is not loaded or existing. Giving up.\n')
+        return False
+
+    for inject in r.lrange(f'next_{exercise}', 0, -1):
+        print(inject)
+
+    return True
+
+#def run_injects(exercise=None, debug=False):
 
 parser = argparse.ArgumentParser(
     description="CEXF rule manager - load, handle and run exercises in Common Exercise Format."
@@ -137,6 +153,7 @@ if args.flush:
     sys.stderr.write(f'Flush exercise database\n')
     r.flushdb()
     sys.exit(0)
+
 if args.list:
     for exercise in r.smembers("exercises"):
         ex = r.hgetall(f'e_{exercise}')
@@ -164,7 +181,7 @@ if args.run and args.exercise is None:
     sys.exit(1)
 
 if args.run and args.exercise:
-    run_exercise(exercise=args.exercise)
+    run_exercise(exercise=args.exercise, debug=args.verbose)
     sys.exit(0)
 
 if args.load is False:
