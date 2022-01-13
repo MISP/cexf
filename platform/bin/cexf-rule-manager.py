@@ -120,20 +120,45 @@ def run_exercise(exercise=None, debug=False):
     if r.exists(f'e_{exercise}'):
         start_time = int(time.time())
         r.set(f'running_state_{exercise}', start_time)
-        duration = r.hget(f'e_{exercise}', 'total_duration')
-        print(duration)
+        duration = int(r.hget(f'e_{exercise}', 'total_duration'))
         r.expire(f'running_state_{exercise}', duration)
     else:
         if debug:
             sys.stderr.write('Exercise {exercise} is not loaded or existing. Giving up.\n')
         return False
-
-    for inject in r.lrange(f'next_{exercise}', 0, -1):
-        print(inject)
+    length = int(r.llen(f'next_{exercise}'))
+    r.hset(f'e_{exercise}', 'steps', length)
+    step = int(duration/length)
+    for i, inject in enumerate(r.lrange(f'next_{exercise}', 0, -1)):
+        if not r.exists(f'running_state_inject_{inject}'):
+           start_time = int(time.time())
+           r.set(f'running_state_inject_{inject}', start_time)
+           if i == 0:
+               r.expire(f'running_state_inject_{inject}', 0)
+           else:
+               r.expire(f'running_state_inject_{inject}', step)
+               step = step + step
 
     return True
 
-#def run_injects(exercise=None, debug=False):
+def run_injects(exercise=None, debug=False):
+    if exercise is None:
+        return False
+    for i, inject in enumerate(r.lrange(f'next_{exercise}', 0, -1)):
+        if not r.exists(f'running_state_inject_{inject}'):
+            if r.hget(f'running_state_inject_{inject}_s', 'state') == 'done':
+                when = int(r.hget(f'running_state_inject_{inject}_s', 'when'))
+                when = datetime.datetime.fromtimestamp(when).strftime('%Y-%m-%d %H:%M:%S')
+                print(f'Done -> {inject} at {when}')
+            else:
+                action = r.hget(f'inject_{exercise}_{inject}','action')
+                print(f'Executing -> {inject} ({action})')
+                r.hset(f'running_state_inject_{inject}_s', 'state', 'done')
+                done_time = int(time.time())
+                r.hset(f'running_state_inject_{inject}_s', 'when', done_time)
+        else:
+            action = r.hget(f'inject_{exercise}_{inject}','action')
+            print(f'Not executing -> {inject} ({action})')
 
 parser = argparse.ArgumentParser(
     description="CEXF rule manager - load, handle and run exercises in Common Exercise Format."
@@ -144,6 +169,7 @@ parser.add_argument("--flush", action="store_true", default=False)
 parser.add_argument("--load", action="store_true", help="Load the CEXF file specified.", default=False)
 parser.add_argument("--list", action="store_true", default=False, help="List loaded rules in the platform.")
 parser.add_argument("--run", action="store_true", default=False, help="Start an exercise.")
+parser.add_argument("--execute", action="store_true", default=False, help="Execute injects from a running exercise.")
 parser.add_argument("--exercise", help="Specify the UUID of the exercise")
 args = parser.parse_args()
 
@@ -170,7 +196,7 @@ if args.list:
 
     sys.exit(0)
 
-if args.file is None and args.run is False:
+if args.file is None and args.run is False and args.execute is False:
     sys.stderr.write(f'CEXF file missing\n')
     parser.print_help()
     sys.exit(1)
@@ -182,6 +208,10 @@ if args.run and args.exercise is None:
 
 if args.run and args.exercise:
     run_exercise(exercise=args.exercise, debug=args.verbose)
+    sys.exit(0)
+
+if args.execute and args.exercise:
+    run_injects(exercise=args.exercise, debug=args.verbose)
     sys.exit(0)
 
 if args.load is False:
