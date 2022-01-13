@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import json
 import sys
+import time
 
 import redis
 
@@ -88,7 +90,34 @@ def insert_cexf(exercise=None, debug=False):
                     for destination in flow['sequence']['followed_by']:
                         r.rpush(f"next_{exercise['exercise']['uuid']}", destination)
             #r.hset(f"inject_{exercise['exercise']['uuid']}_{inject['uuid']}", k, str(inject[k]))
+    return True
 
+
+def check_state(exercise=None, debug=False):
+    '''
+    Check if a an exercise is running. True if exercise is running
+    '''
+    if exercise is None:
+        return False
+    if not r.exists(f'running_state_{exercise}'):
+        return False
+    else:
+        return True
+
+def run_exercise(exercise=None, debug=False):
+    if exercise is None:
+        return False
+    if check_state(exercise=exercise):
+        if debug:
+            sys.stderr.write('Exercise {exercise} is already running. Giving up.\n')
+        return False
+    else:
+        start_time = int(time.time())
+        r.set(f'running_state_{exercise}', start_time)
+        duration = r.hget(f'e_{exercise}', 'total_duration')
+        print(duration)
+        r.expire(f'running_state_{exercise}', duration)
+        return True
 
 parser = argparse.ArgumentParser(
     description="CEXF rule manager - load, handle and run exercises in Common Exercise Format."
@@ -98,6 +127,8 @@ parser.add_argument("-f", "--file", help="Specify CEXF file in JSON format.")
 parser.add_argument("--flush", action="store_true", default=False)
 parser.add_argument("--load", action="store_true", help="Load the CEXF file specified.", default=False)
 parser.add_argument("--list", action="store_true", default=False, help="List loaded rules in the platform.")
+parser.add_argument("--run", action="store_true", default=False, help="Start an exercise.")
+parser.add_argument("--exercise", help="Specify the UUID of the exercise")
 args = parser.parse_args()
 
 r = redis.Redis(host='localhost', port=6379, db=11, charset="utf-8", decode_responses=True)
@@ -112,11 +143,29 @@ if args.list:
         injects = r.scard(f'injects_{exercise}')
         sys.stdout.write(f'Rule {ex["name"]} - {exercise} with {injects} injects is loaded.\n')
         sys.stdout.write(f'     ◺ {ex["description"]}\n')
+        if check_state(exercise=exercise):
+            remaining = r.ttl(f'running_state_{exercise}')
+            started = int(r.get(f'running_state_{exercise}'))
+            start = datetime.datetime.fromtimestamp(started).strftime('%Y-%m-%d %H:%M:%S')
+            sys.stdout.write(f'     ◺ Status: Running ➰ (Remaining: {remaining} seconds - Started at: {start})\n')
+        else:
+            sys.stdout.write(f'     ◺ Status: Stopped ⏹\n')
+
     sys.exit(0)
-if args.file is None:
+
+if args.file is None and args.run is False:
     sys.stderr.write(f'CEXF file missing\n')
     parser.print_help()
     sys.exit(1)
+
+if args.run and args.exercise is None:
+    sys.stderr.write(f'UUID of Exercise missing\n')
+    parser.print_help()
+    sys.exit(1)
+
+if args.run and args.exercise:
+    run_exercise(exercise=args.exercise)
+    sys.exit(0)
 
 if args.load is False:
     sys.stderr.write(f'Action is required - such as load, run\n')
