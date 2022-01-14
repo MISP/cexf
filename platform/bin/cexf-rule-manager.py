@@ -29,7 +29,7 @@ def validate_cexf(input=None, debug=False):
     return True
 
 
-def insert_cexf(exercise=None, debug=False):
+def insert_cexf(exercise=None, debug=False, total_duration=None):
     '''
         # Database structure
         ## List of exercise in SET-exercises
@@ -49,7 +49,10 @@ def insert_cexf(exercise=None, debug=False):
     r.sadd("exercises", exercise['exercise']['uuid'])
     for k in exercise['exercise'].keys():
         if k not in special_fields:
-            r.hset(f"e_{exercise['exercise']['uuid']}", k, str(exercise['exercise'][k]))
+            if total_duration is not None and k == 'total_duration':
+                r.hset(f"e_{exercise['exercise']['uuid']}", k , total_duration)
+            else:
+                r.hset(f"e_{exercise['exercise']['uuid']}", k, str(exercise['exercise'][k]))
         if k == 'tags':
             for v in exercise['exercise'][k]:
                 r.sadd(f"e_{exercise['exercise']['uuid']}_{k}", str(v))
@@ -91,7 +94,6 @@ def insert_cexf(exercise=None, debug=False):
                     for destination in flow['sequence']['followed_by']:
                         print(destination)
                         r.rpush(f"next_{exercise['exercise']['uuid']}", destination)
-            #r.hset(f"inject_{exercise['exercise']['uuid']}_{inject['uuid']}", k, str(inject[k]))
     return True
 
 
@@ -171,6 +173,7 @@ parser.add_argument("--list", action="store_true", default=False, help="List loa
 parser.add_argument("--run", action="store_true", default=False, help="Start an exercise.")
 parser.add_argument("--execute", action="store_true", default=False, help="Execute injects from a running exercise.")
 parser.add_argument("--exercise", help="Specify the UUID of the exercise")
+parser.add_argument("--total-duration", help="Overwrite exercise total_duration. Duration is expressed in seconds.")
 args = parser.parse_args()
 
 r = redis.Redis(host='localhost', port=6379, db=11, charset="utf-8", decode_responses=True)
@@ -225,4 +228,4 @@ if not validate_cexf(input=ex, debug=args.verbose):
     sys.exit(1)
 
 if args.load:
-    insert_cexf(exercise=ex, debug=args.verbose)
+    insert_cexf(exercise=ex, debug=args.verbose, total_duration=args.total_duration)
