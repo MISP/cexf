@@ -162,16 +162,43 @@ def run_injects(exercise=None, debug=False):
             action = r.hget(f'inject_{exercise}_{inject}','action')
             print(f'Not executing -> {inject} ({action})')
 
+def document(exercise=None, debug=False):
+    if exercise is None:
+        return False
+    import graphviz
+    from graphviz import Digraph
+    g = Digraph('G')
+    e = r.hgetall(f'e_{exercise}')
+    previous = None
+    for i, inject in enumerate(r.lrange(f'next_{exercise}', 0, -1)):
+        if i == 0:
+            g.edge('start_exercise', inject)
+            g.node('start_exercise', f'start_exercise for {e["total_duration"]} secs')
+            action = r.hget(f'inject_{exercise}_{inject}','action')
+            g.node(inject, action)
+        else:
+            print(i)
+            g.edge(previous, inject)
+        previous = inject
+    g.edge(previous, 'end')
+    action = r.hget(f'inject_{exercise}_{previous}','action')
+    g.node(previous, action)
+    g.node('start_exercise', shape='Mdiamond')
+    g.node('end', shape='Mdiamond')
+    g.view()
+
+
 parser = argparse.ArgumentParser(
     description="CEXF rule manager - load, handle and run exercises in Common Exercise Format."
 )
 parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output.", default=False)
 parser.add_argument("-f", "--file", help="Specify CEXF file in JSON format.")
-parser.add_argument("--flush", action="store_true", default=False)
+parser.add_argument("--flush", action="store_true", default=False, help="Flush the whole exercise database.")
 parser.add_argument("--load", action="store_true", help="Load the CEXF file specified.", default=False)
 parser.add_argument("--list", action="store_true", default=False, help="List loaded rules in the platform.")
 parser.add_argument("--run", action="store_true", default=False, help="Start an exercise.")
 parser.add_argument("--execute", action="store_true", default=False, help="Execute injects from a running exercise.")
+parser.add_argument("--document", action="store_true", default=False, help="Generate a documentation of the current exercise.")
 parser.add_argument("--exercise", help="Specify the UUID of the exercise")
 parser.add_argument("--total-duration", help="Overwrite exercise total_duration. Duration is expressed in seconds.")
 args = parser.parse_args()
@@ -199,7 +226,7 @@ if args.list:
 
     sys.exit(0)
 
-if args.file is None and args.run is False and args.execute is False:
+if args.file is None and args.run is False and args.execute is False and args.document is False:
     sys.stderr.write(f'CEXF file missing\n')
     parser.print_help()
     sys.exit(1)
@@ -215,6 +242,10 @@ if args.run and args.exercise:
 
 if args.execute and args.exercise:
     run_injects(exercise=args.exercise, debug=args.verbose)
+    sys.exit(0)
+
+if args.document and args.exercise:
+    document(exercise=args.exercise, debug=args.verbose)
     sys.exit(0)
 
 if args.load is False:
