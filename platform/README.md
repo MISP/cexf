@@ -34,6 +34,23 @@ python3 cexf-rule-manager.py --run --exercise 75d7460-af9d-4098-8ad1-754457076b3
 python3 cexf-rule-manager.py --list
 ```
 
+## Start an exercise and run the injects
+
+```shell
+16:45 $ python3 cexf-rule-manager.py --list
+Rule Phishing e-mail - 75d7460-af9d-4098-8ad1-754457076b32 with 2 injects is loaded.
+     ◺ Simple Spear Phishing e-mail example, mimicing a fraud case
+     ◺ Status: Stopped ⏹
+16:46 $ python3 cexf-rule-manager.py --run --exercise 75d7460-af9d-4098-8ad1-754457076b3
+16:47 $ python3 cexf-rule-manager.py --list
+Rule Phishing e-mail - 75d7460-af9d-4098-8ad1-754457076b32 with 2 injects is loaded.
+     ◺ Simple Spear Phishing e-mail example, mimicing a fraud case
+     ◺ Status: Running ➰ (Remaining: 86 seconds - Started at: 2022-01-20 16:47:15)
+16:52 $ python3 cexf-rule-manager.py --execute --exercise 75d7460-af9d-4098-8ad1-754457076b32
+Executing -> 19272db1-a7c4-4cb3-aa33-df775b8fec8c (email_to_participants)
+Not executing -> c104aa37-e394-43ce-b82b-a733d3745468 (network_connection)
+```
+
 # License
 
 ```
