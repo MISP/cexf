@@ -102,7 +102,7 @@ of a single JSON object, with the CEXF format being composed of four required ke
 ### inject_payloads
 
 - `name` is a string in UTF-8, naming the inject payload.
-- `parameters` is a JSON object describing the `parameters` of the `type.
+- `parameters` is a JSON object describing the `parameters` of the `type`.
 - `type` is a string in UTF-8, describing the `type` as defined in the `type` vocabulary.
 - `uuid` is a string in UTF-8, specifying the UUID (version 4) of the inject payload. This value MUST be fixed while referencing the same payload.
 
@@ -110,8 +110,8 @@ of a single JSON object, with the CEXF format being composed of four required ke
 
 |Type|Description|
 |:---|:----------|
-|`file`|A file inject described as a Base64 string in `content` or a file location.|
-|`tcp_connection`|A TCP connection described with `parameters` such as `destination`, `port` and `source`.|
+|`file`|A file inject described as a Base64 encoded string via the `content` key, or alternatively the path to a file.|
+|`tcp_connection`|A TCP connection described by `parameters` such as `destination`, `port` and `source`.|
 
 #### Sample inject_payloads
 
@@ -143,7 +143,7 @@ of a single JSON object, with the CEXF format being composed of four required ke
 |Action|Description|
 |:-----|:----------|
 |`network_connection`|Create a network connection|
-|`email_to_participants`|Email to participant defined in the exercise|
+|`email_to_participants`|Email to participant(s) as defined in the exercise|
 
 #### `target_tool` vocabulary
 
