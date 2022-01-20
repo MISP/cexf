@@ -96,6 +96,7 @@ of a single JSON object, with the CEXF format being composed of four required ke
 #### `action` vocabulary
 
 |Action|Description|
+|:-----|:----------|
 |`network_connection`|Create a network connection|
 |`email_to_participants`|Email to participant defined in the exercise|
 
