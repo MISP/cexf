@@ -52,6 +52,13 @@ of a single JSON object, with the CEXF format being composed of four required ke
 
 ### inject_flow
 
+- `description` is a string in UTF-8, meant as a short description for the flow step of the exercise.
+- `inject_uuid` is a string in UTF-8, referencing the UUID (version 4) of the inject to be used for this step.
+- `reporting_callback` is an OPTIONAL JSON array containing of callback when the inject is executed.
+- `requirements` is an optional JSON object containing two fields `inject_uuid` and `resolution_requirement` which describes the required inject before executing this step.
+- `sequence` is an optional JSON object containing the sequence definition such as the `completion_trigger`, `followed_by`, `trigger`. `followed_by` describes the next inject to be run after this step.
+- `timing` is an optional JSON object containing the timing definition when this step is triggered. `triggered_at` is expressed at which time in seconds this step will be executed.
+
 ### inject_payloads
 
 ### injects
