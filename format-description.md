@@ -6,6 +6,11 @@ The JSON format includes the overall structure, along with the semantics associa
 
 The purpose of the format's description is the support of other implementations reusing it and ensuring interoperability with existing tools implementing the Common Exercise Format.
 
+## Authors
+
+- Alexandre Dulaunoy, Computer Incident Response Center Luxembourg
+- Andras Iklody, Computer Incident Response Center Luxembourg
+
 ## Overal structure of the JSON file
 
 The CEXF format is expressed via the JSON format (RFC8259). An exercise is composed
@@ -56,10 +61,47 @@ of a single JSON object, with the CEXF format being composed of four required ke
 - `inject_uuid` is a string in UTF-8, referencing the UUID (version 4) of the inject to be used for the given step.
 - `reporting_callback` is an OPTIONAL JSON array containg a callback to be executed upon completion of the inject.
 - `requirements` is an optional JSON object containing two fields: `inject_uuid` and `resolution_requirement`, describig both the UUID (version 4) and the resolution requirement of previous inject flow elements, upon whose completion the execution of the given inject flow step depends.
-- `sequence` is an optional JSON object containing the sequence definition, such as the `completion_trigger`, `followed_by` and `trigger`. `followed_by` describes the next inject to be executed after the given flow step.
+- `sequence` is an optional JSON object containing the sequence definition, such as the `completion_trigger`, `followed_by` and `trigger`. `followed_by` describes the next inject to be executed after the given flow step. `Trigger` is a set of `trigger` from the `trigger` vocabulary.
 - `timing` is an optional JSON object, containing the timing definition as of when the execution of given step is to be triggered. `triggered_at` is expressed at in seconds, indicating when the given step will be executed.
+
+#### `trigger` vocabulary
+
+|Trigger|Description|
+|:------|:----------|
+|`startex`|Special trigger to define the beginning of an exercise|
 
 ### inject_payloads
 
+- `name` is a string in UTF-8, naming the inject payload.
+- `parameters` is a JSON object describing the `parameters` of the `type.
+- `type` is a string in UTF-8, describing the `type` as defined in the `type` vocabulary.
+- `uuid` is a string in UTF-8, specifying the UUID (version 4) of the inject payload. This value MUST be fixed while referencing the same payload.
+
+#### `type` vocabulary
+
+|Type|Description|
+|:---|:----------|
+|`file`|A file inject described as a Base64 string in `content` or a file location.|
+|`tcp_connection`|A TCP connection described with `parameters` such as `destination`, `port` and `source`.|
+
 ### injects
 
+- `action` is a string in UTF-8, describing the `action` as defined in the `action` vocabulary.
+- `action_payload_resource_uuid` is a a string in UTF-8, specifying the UUID (version 4) of the inject payload to use.
+- `inject_evaluation` is a JSON object describing the `inject_evaluation` for the specify `target_tool`. This evaluation is a JSON object depending of the `target_tool` parameters to check.
+- `name` is a string in UTF-8, naming the inject.
+- `target_tool` is a string in UTF-8, describing the `target_tool` as defined in the `target_tool` vocabulary.
+- `uuid` is a string in UTF-8, specifying the UUID (version 4) of the inject. This value MUST be fixed while referencing the same inject.
+
+#### `action` vocabulary
+
+|Action|Description|
+|`network_connection`|Create a network connection|
+|`email_to_participants`|Email to participant defined in the exercise|
+
+#### `target_tool` vocabulary
+
+|Target_tool|Description|
+|:----------|:----------|
+|`MISP`|MISP Threat Intelligence Platform|
+|`Suricata`|Suricata NIDS|
