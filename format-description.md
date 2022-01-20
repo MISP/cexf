@@ -34,6 +34,8 @@ of a single JSON object, with the CEXF format being composed of four required ke
 - `valid_until` is an optional string in UTF-8, describing the validity of an exercise.
 - `version` is a string in UTF-8, expressed using a positive monotonic value, to specify the version number of this exercise.
 
+#### Sample exercise
+
 ```json
   "exercise": {
     "description": "Simple Spear Phishing e-mail example, mimicing a fraud case",
@@ -70,6 +72,33 @@ of a single JSON object, with the CEXF format being composed of four required ke
 |:------|:----------|
 |`startex`|Special trigger to define the beginning of an exercise|
 
+#### Sample inject_flow
+
+```json
+  "inject_flow": [
+    {
+      "description": "Initial inject of an incident email to start the exercise.",
+      "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
+      "reporting_callback": [],
+      "requirements": {},
+      "sequence": {
+        "completion_trigger": [
+          "time_expiration",
+          "completion"
+        ],
+        "followed_by": [
+          "c104aa37-e394-43ce-b82b-a733d3745468"
+        ],
+        "trigger": [
+          "startex"
+        ]
+      },
+      "timing": {
+        "triggered_at": null
+      }
+    },
+    ]
+```
 ### inject_payloads
 
 - `name` is a string in UTF-8, naming the inject payload.
@@ -83,6 +112,22 @@ of a single JSON object, with the CEXF format being composed of four required ke
 |:---|:----------|
 |`file`|A file inject described as a Base64 string in `content` or a file location.|
 |`tcp_connection`|A TCP connection described with `parameters` such as `destination`, `port` and `source`.|
+
+#### Sample inject_payloads
+
+```json
+  "inject_payloads": [
+    {
+      "name": "email-incident",
+      "parameters": {
+        "content": "RnJvbSBjc2lydEB0ZWxjby5sdQoKRGVhciB4eSwKCldlIGhhdmUgaGFkIGEgZmFpbGVkIHNwZWFycGhpc2hpbmcgYXR0ZW1wdCB0YXJnZXRpbmcgb3VyIENFTyByZWNlbnRseSB3aXRoIHRoZSBmb2xsb3dpbmcgZGV0YWlsczoKCk91ciBDRU8gcmVjZWl2ZWQgYW4gRS1tYWlsIG9uIDAzLzAyLzIwMjEgMTU6NTYgY29udGFpbmluZyBhIHBlcnNvbmFsaXNlZCBtZXNzYWdlIGFib3V0IGEgcmVwb3J0IGNhcmQgZm9yIHRoZWlyIGNoaWxkLiBUaGUgYXR0YWNrZXIgcHJldGVuZGVkIHRvIGJlIHdvcmtpbmcgZm9yIHRoZSBzY2hvb2wgb2YgdGhlIENFT+KAmXMgZGF1Z2h0ZXIsIHNlbmRpbmcgdGhlIG1haWwgZnJvbSBhIHNwb29mZWQgYWRkcmVzcyAoam9obi5kb2VAbHV4ZW1ib3VyZy5lZHUpLiBKb2huIERvZSBpcyBhIHRlYWNoZXIgb2YgdGhlIHN0dWRlbnQuIFRoZSBlbWFpbCB3YXMgcmVjZWl2ZWQgZnJvbSB0aHJvd2F3YXktZW1haWwtcHJvdmlkZXIuY29tICgxMzcuMjIxLjEwNi4xMDQpLiAKClRoZSBlLW1haWwgY29udGFpbmVkIGEgbWFsaWNpb3VzIGZpbGUgKGZpbmQgaXQgYXR0YWNoZWQpIHRoYXQgd291bGQgdHJ5IHRvIGRvd25sb2FkIGEgc2Vjb25kYXJ5IHBheWxvYWQgZnJvbSBodHRwczovL2V2aWxwcm92aWRlci5jb20vdGhpcy1pcy1ub3QtbWFsaWNpb3VzLmV4ZSAoYWxzbyBhdHRhY2hlZCwgcmVzb2x2ZXMgdG8gMjYwNzo1MzAwOjYwOmNkNTI6MzA0Yjo3NjBkOmRhNzpkNSkuIEl0IGxvb2tzIGxpa2UgdGhlIHNhbXBsZSBpcyB0cnlpbmcgdG8gZXhwbG9pdCBDVkUtMjAxNS01NDY1LiBBZnRlciBhIGJyaWVmIHRyaWFnZSwgdGhlIHNlY29uZGFyeSBwYXlsb2FkIGhhcyBhIGhhcmRjb2RlZCBDMiBhdCBodHRwczovL2Fub3RoZXIuZXZpbC5wcm92aWRlci5jb206NTc2NjYgKDExOC4yMTcuMTgyLjM2KSB0byB3aGljaCBpdCB0cmkKZXMgdG8gZXhmaWx0cmF0ZSBsb2NhbCBjcmVkZW50aWFscy4gVGhpcyBpcyBob3cgZmFyIHdlIGhhdmUgZ290dGVuIHNvIGZhci4gUGxlYXNlIGJlIG1pbmRmdWwgdGhhdCB0aGlzIGlzIGFuIG9uZ29pbmcgaW52ZXN0aWdhdGlvbiwgd2Ugd291bGQgbGlrZSB0byBhdm9pZCBpbmZvcm1pbmcgdGhlIGF0dGFja2VyIG9mIHRoZSBkZXRlY3Rpb24gYW5kIGtpbmRseSBhc2sgeW91IHRvIG9ubHkgdXNlIHRoZSBjb250YWluZWQgaW5mb3JtYXRpb24gdG8gcHJvdGVjdCB5b3VyIGNvbnN0aXR1ZW50cy4KCkJlc3QgcmVnYXJkcywKCg==",
+        "content-type": "base64",
+        "filename": "email.eml"
+      },
+      "type": "file",
+      "uuid": "930c6f6b-f89d-456d-a59d-5cb89bdec0b1"
+    },
+```
 
 ### injects
 
@@ -106,3 +151,37 @@ of a single JSON object, with the CEXF format being composed of four required ke
 |:----------|:----------|
 |`MISP`|MISP Threat Intelligence Platform|
 |`Suricata`|Suricata NIDS|
+
+#### Sample injects
+
+```json
+"injects": [
+ {
+      "action": "network_connection",
+      "action_payload_resource_uuid": "9b519819-36cc-48b1-8418-43831f2d3a6a",
+      "inject_evaluation": [
+        {
+          "parameters": [
+            {
+              "source-ip": {
+                "comparison": "is",
+                "values": [
+                  "137.221.106.104"
+                ]
+              }
+            }
+          ],
+          "result": "alert",
+          "score_range": [
+            0,
+            50
+          ]
+        }
+      ],
+      "name": "malicious network flow",
+      "target_tool": "Suricata",
+      "uuid": "c104aa37-e394-43ce-b82b-a733d3745468"
+    },
+  ]
+```
+
