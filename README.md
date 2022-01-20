@@ -10,13 +10,19 @@ Common Exercise Format is a proposed format to describe cyber exercise including
 - To trace the evolution of an exercise (via diff ang git);
 - To allow external contributions by using a common format;
 
-# Details
+# CEXF Format description
 
-- Create a new training repository according to the repository template, naming convention and license
-    - "misp-training-xxx"
-    - license ABC
-    - Copy folder from "base", change name
-- 
+- [Common Exercise Format (CEXF) - format description](https://github.com/MISP/cexf/blob/main/format-description.md)
+
+# CEXF Platform
+
+- An [open source platform](https://github.com/MISP/cexf/tree/main/platform) to run exercises in CEXF format.
+
+# How to contribute and create an exercise
+
+- Create a new git repository with the JSON CEXF.
+- Create JSON file(s) to describe your exercise(s). You can have a look at [Common Exercise Format (CEXF) - format description](https://github.com/MISP/cexf/blob/main/format-description.md) or the [sample directory](https://github.com/MISP/cexf/tree/main/samples) for examples.
+- Propose a pull-request to have your exercise listed on this repository.
 
 ## Common Exercise format - Sample
 
@@ -289,3 +295,10 @@ Common Exercise Format is a proposed format to describe cyber exercise including
  OF THE POSSIBILITY OF SUCH DAMAGE.
 ~~~~
 
+# Sponsors
+
+The project is supported by
+
+- ["Connecting Europe Facility – Cybersecurity Digital Service Infrastructure Maintenance and Evolution of Core Service Platform Cooperation Mechanism for CSIRTs – MeliCERTes Facility” (SMART 2018/1024)"](https://digital-strategy.ec.europa.eu/en/news/open-platforms-collaborate-cyber-threats) which is an open platforms to collaborate on cyber threats.
+- MISP Project
+- CIRCL - Computer Incident Response Center Luxembourg
