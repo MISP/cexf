@@ -211,7 +211,7 @@
       "uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c"
     },
     {
-      "action": "network connection",
+      "action": "network_connection",
       "action_payload_resource_uuid": "9b519819-36cc-48b1-8418-43831f2d3a6a",
       "inject_evaluation": [
         {
