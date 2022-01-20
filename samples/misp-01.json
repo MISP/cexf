@@ -22,7 +22,7 @@
       "description": "Initial inject of an incident email to start the exercise.",
       "inject_uuid": "19272db1-a7c4-4cb3-aa33-df775b8fec8c",
       "reporting_callback": [],
-      "requirements": [],
+      "requirements": {},
       "sequence": {
         "completion_trigger": [
           "time_expiration",
