@@ -272,10 +272,11 @@ Common Exercise Format is a proposed format to describe cyber exercise including
 # License
 
 ~~~~
- Copyright (c) 2021-2022 Alexandre Dulaunoy - a@foo.be
- Copyright (c) 2021-2022 CIRCL - Computer Incident Response Center Luxembourg
- Copyright (c) 2021-2022 Andras Iklody
+ Copyright (c) 2021-2024 Alexandre Dulaunoy - a@foo.be
+ Copyright (c) 2021-2024 CIRCL - Computer Incident Response Center Luxembourg
+ Copyright (c) 2021-2024 Andras Iklody
  Copyright (c) 2021-2022 Koen Van Impe
+ Copyright (c) 2024 Sami Mokaddem
 
  Redistribution and use in source and binary forms, with or without modification,
  are permitted provided that the following conditions are met:
