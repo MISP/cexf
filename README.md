@@ -14,9 +14,11 @@ Common Exercise Format is a proposed format to describe cyber exercise including
 
 - [Common Exercise Format (CEXF) - format description](https://github.com/MISP/cexf/blob/main/format-description.md)
 
-# CEXF Platform
+# Platforms supporting the CEXF Format
 
-- An [open source platform](https://github.com/MISP/cexf/tree/main/platform) to run exercises in CEXF format.
+
+- [SkillAegis](https://github.com/MISP/SkillAegis) is a platform to design, run, and monitor exercise scenarios, enhancing skills in applications like MISP and training users in best practices for information management and protective tools. Its gamification system makes learning engaging, ensuring users acquire essential technical skills and adhere to industry standards.
+- An [open source platform](https://github.com/MISP/cexf/tree/main/platform) PoC to run exercises in CEXF format.
 
 # How to contribute and create an exercise
 
